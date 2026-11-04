@@ -1,5 +1,7 @@
 package com.ecommerce.model.product;
 
+import java.util.Objects;
+
 /**
  * Quản lý thông tin và các thao tác nghiệp vụ đối với sản phẩm.
  */
@@ -75,5 +77,22 @@ public class Product {
     public String toString() {
         return String.format("Product[id='%s', name='%s', price=%,.0fđ, stock=%d]", 
                 id, name, price, stockQuantity);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj){
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Product other = (Product) obj;
+        return Objects.equals(this.id, other.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.id);
     }
 }
