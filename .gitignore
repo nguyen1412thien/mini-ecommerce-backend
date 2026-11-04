@@ -28,6 +28,8 @@ replay_pid*
 # macOS
 Icon?
 Icon
+Icon*
+Icon\r
 .DS_Store
 
 # Build output
