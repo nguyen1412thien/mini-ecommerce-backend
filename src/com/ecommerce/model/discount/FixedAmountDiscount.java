@@ -16,6 +16,9 @@ public class FixedAmountDiscount implements DiscountStrategy {
     // Áp dụng trừ số tiền cố định (không vượt quá tổng giá trị đơn hàng)
     @Override
     public double applyDiscount(double originalTotal) {
+        if (originalTotal <= 0) {
+            throw new IllegalArgumentException("Tong don hang phai lon hon 0");
+        }
         if (this.amount > originalTotal) {
             return originalTotal;
         } else {

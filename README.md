@@ -1,4 +1,4 @@
-# 🟢 MINI E-COMMERCE - BACKEND SERVICE
+# MINI E-COMMERCE - BACKEND SERVICE
 
 > **Công nghệ:** Java 17/21, Spring Boot 3, Spring Data JPA, PostgreSQL / MySQL, Spring Security 6 + JWT  
 > **Kiến trúc:** 3-tier Architecture (Controller - Service - Repository)

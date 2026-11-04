@@ -65,7 +65,7 @@ public class ProductRepository {
             throw new ProductNotFoundException("Khong tim thay san pham co ID " + id);
         } else {
 
-            return products.get(id);
+            return product;
 
         }
     }

@@ -7,7 +7,7 @@ public class PercentageDiscount implements DiscountStrategy {
     private double percentage; // Tỷ lệ phần trăm giảm giá (0 - 100)
 
     public PercentageDiscount(double percentage) {
-        if (percentage > 100 || percentage <= 0) {
+        if (percentage >= 100 || percentage <= 0) {
             throw new IllegalArgumentException("Phan tram phai nam trong khoang 0 den 100");
         }
         this.percentage = percentage;
@@ -16,6 +16,9 @@ public class PercentageDiscount implements DiscountStrategy {
     // Áp dụng tính số tiền giảm theo phần trăm
     @Override
     public double applyDiscount(double originalTotal) {
+        if (originalTotal <= 0) {
+            throw new IllegalArgumentException("Tong hon hang phai lon hon 0");
+        }
         return originalTotal * this.percentage / 100.0;
     }
 }
