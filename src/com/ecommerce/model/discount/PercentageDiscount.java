@@ -16,6 +16,6 @@ public class PercentageDiscount implements DiscountStrategy {
     // Áp dụng tính số tiền giảm theo phần trăm
     @Override
     public double applyDiscount(double originalTotal) {
-        return originalTotal * this.percentage / 100;
+        return originalTotal * this.percentage / 100.0;
     }
 }
