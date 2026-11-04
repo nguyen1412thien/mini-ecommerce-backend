@@ -1,0 +1,37 @@
+# Compiled class file
+*.class
+
+# Log file
+*.log
+
+# Package Files
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# JVM crash logs
+hs_err_pid*
+replay_pid*
+
+# IDE & Editor settings
+.idea/
+*.iml
+.vscode/
+.settings/
+.project
+.classpath
+.DS_Store
+
+# macOS
+Icon?
+Icon
+.DS_Store
+
+# Build output
+target/
+build/
+bin/
+out/
