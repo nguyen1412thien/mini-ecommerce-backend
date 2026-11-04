@@ -1,6 +1,7 @@
 package com.ecommerce.repository;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,5 +69,29 @@ public class ProductRepository {
             return products.get(id);
 
         }
+    }
+
+    //tra ve danh sach sap xep theo gia tang dan (thap -> cao)
+    public List<Product> findAllSortedByPriceAsc() {
+        List<Product> list = this.findAll();
+        list.sort(new Comparator<Product>() {
+            @Override 
+            public int compare(Product p1,Product p2) {
+                return Double.compare(p1.getPrice(), p2.getPrice());
+            }
+        });
+        return list;
+    }
+
+    //tra ve danh sach sap xep theo gia giam dan (cao -> thap)
+    public List<Product> findAllSortedByPriceDesc() {
+        List<Product> list = this.findAll();
+        list.sort(new Comparator<Product>() {
+            @Override 
+            public int compare(Product p1,Product p2) {
+                return Double.compare(p2.getPrice(), p1.getPrice());
+            }
+        });
+        return list;
     }
 }
