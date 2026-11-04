@@ -69,4 +69,26 @@ public class ProductRepository {
 
         }
     }
+
+    // tra ve danh sach sap xep theo gia tang dan (thap -> cao)
+    public List<Product> findAllSortedByPriceAsc() {
+        List<Product> list = this.findAll();
+        list.sort((p1, p2) -> Double.compare(p1.getPrice(), p2.getPrice()));
+        return list;
+    }
+
+    // tra ve danh sach sap xep theo gia giam dan (cao -> thap)
+    public List<Product> findAllSortedByPriceDesc() {
+        List<Product> list = this.findAll();
+        list.sort((p1, p2) -> Double.compare(p2.getPrice(), p1.getPrice()));
+        return list;
+    }
+
+    // Trả về danh sách sản phẩm được sắp xếp theo **tên chữ cái từ A đến Z** (không
+    // phân biệt chữ hoa, chữ thường)
+    public List<Product> findAllSortedByName() {
+        List<Product> list = this.findAll();
+        list.sort((p1,p2)-> p1.getName().compareToIgnoreCase(p2.getName()));
+        return list;
+    }
 }
