@@ -12,10 +12,13 @@ public class OrderItem {
 
     public OrderItem(Product product, int quantity) {
         if (product == null) {
-            throw new IllegalArgumentException("San pham khong duoc de trong");
+            throw new IllegalArgumentException("Sản phẩm không được để trống");
         }
         if (quantity <= 0) {
-            throw new IllegalArgumentException("So luong phai lon hon 0");
+            throw new IllegalArgumentException("Số lượng phải lớn hơn 0");
+        }
+        if (quantity > product.getStockQuantity()) {
+            throw new IllegalStateException("Thông báo số lượng đặt vượt quá tồn kho hiện tại");
         }
         this.product = product;
         this.quantity = quantity;
