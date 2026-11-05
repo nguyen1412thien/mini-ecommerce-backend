@@ -1,44 +1,34 @@
 package com.ecommerce;
 
-import java.math.BigDecimal;
-
-import com.ecommerce.model.discount.FixedAmountDiscount;
-import com.ecommerce.model.order.Order;
-import com.ecommerce.model.order.OrderItem;
 import com.ecommerce.model.product.Product;
+import com.ecommerce.repository.ProductRepository;
 
 /**
  * Điểm khởi chạy chính để kiểm thử thủ công hệ thống backend.
  */
 public class Main {
     public static void main(String[] args) {
-        System.out.println(1.0 - 0.9);
-        System.out.println(0.1 + 0.2 == 0.3);
-        System.out.println(BigDecimal.valueOf(1.0).subtract(BigDecimal.valueOf(0.9)));
-        BigDecimal valueOf = new BigDecimal("2.0");
-        BigDecimal valueOf2 = new BigDecimal("2.00");
-        System.out.println(valueOf.equals(valueOf2));
-        System.out.println(valueOf.compareTo(valueOf2));
+        Product p1 = new Product("P01", "Sản phẩm 1", 200000.0, 1000);
+        Product p2 = new Product("P02", "Sản phẩm 2", 500000.0, 99214);
+        Product p3 = new Product("P03", "Sản phẩm 3", 1500000.0, 43546);
+        Product p4 = new Product("P04", "Sản phẩm 4", 15000000.0, 0);
+        Product p5 = new Product("P05", "Sản phẩm 5", 30000000.0, 12432);
+        Product p6 = new Product("P06", "Sản phẩm 6", 40000000.0, 55464);
 
-        Product p = new Product("P01", "San pham 1", 1000.0, 5);
-        try {
-            new OrderItem(p, 10);
+        ProductRepository products = new ProductRepository();
+        products.save(p1);
+        products.save(p2);
+        products.save(p3);
+        products.save(p4);
+        products.save(p5);
+        products.save(p6);
 
-        } catch (IllegalStateException e) {
-            System.out.println(e.getMessage());
-        }
-
-        Order o1 = new Order("O01", "Nguyễn Thanh Thiên");
-        Product p1 = new Product("P01", "Sản phẩm 1", 100000.0, 1);
-        Product p2 = new Product("P02", "Sản phẩm 2", 100000.0, 1);
-        OrderItem item1 = new OrderItem(p1, 1);
-        OrderItem item2 = new OrderItem(p2, 1);
-        o1.addItem(item1);
-        o1.addItem(item2);
-        FixedAmountDiscount discount = new FixedAmountDiscount(500000.0);
-        Double total = o1.calculateFinalTotal(discount);
-        System.out.println(total);
-
-
+        System.out.println(products.findByPriceRange(500000.0, 2000000.0));
+        System.out.println();
+        System.out.println(products.findAllProductName());
+        System.out.println();
+        System.out.println(products.findInStockProducts());
+        System.out.println();
+        System.out.println(products.findTopExpensiveProducts(2));
     }
 }

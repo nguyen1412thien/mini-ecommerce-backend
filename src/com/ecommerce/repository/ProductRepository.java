@@ -53,8 +53,7 @@ public class ProductRepository {
         Product rm = this.products.remove(id);
         if (rm == null) {
             return false;
-        }
-        else {
+        } else {
             return true;
         }
     }
@@ -97,4 +96,47 @@ public class ProductRepository {
         list.sort((p1, p2) -> p1.getName().compareToIgnoreCase(p2.getName()));
         return list;
     }
+
+    // Tìm và trả về danh sách các sản phẩm có đơn giá nằm trong đoạn từ `minPrice`
+    // đến `maxPrice`
+    public List<Product> findByPriceRange(double minPrice, double maxPrice) {
+        if (minPrice < 0 || maxPrice < 0) {
+            throw new IllegalArgumentException("Giá tìm kiếm không được âm");
+        }
+        if (minPrice > maxPrice) {
+            throw new IllegalArgumentException("Giá tối thiểu không được lớn hơn giá tối đa");
+        }
+        return this.findAll().stream()
+                .filter(p -> p.getPrice() >= minPrice && p.getPrice() <= maxPrice)
+                .sorted((p1,p2) -> Double.compare(p1.getPrice(), p2.getPrice()))
+                .toList();
+    }
+
+    // Lấy ra danh sách toàn bộ Tên của tất cả các sản phẩm hiện có trong kho hàng.
+    public List<String> findAllProductName() {
+        return this.findAll().stream()
+                .map(p -> p.getName())
+                .sorted()
+                .toList();
+    }
+
+    // Lọc và trả về danh sách các sản phẩm **Đang còn hàng** trong kho
+    public List<Product> findInStockProducts() {
+        return this.findAll().stream()
+                .filter(p -> p.getStockQuantity() > 0)
+                .toList();
+    }
+
+    // Lấy ra danh sách Top `limit` sản phẩm có đơn giá cao nhất trong kho (sắp xếp
+    // giá từ cao xuống thấp và chỉ lấy đúng số lượng phần tử theo `limit`).
+    public List<Product> findTopExpensiveProducts(int limit) {
+        if (limit <= 0) {
+            throw new IllegalArgumentException("Số lượng giới hạn phải lớn hơn 0");
+        }
+        return this.findAll().stream()
+                .sorted((p1, p2) -> Double.compare(p2.getPrice(), p1.getPrice()))
+                .limit(limit)
+                .toList();
+    }
+
 }
