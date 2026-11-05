@@ -6,10 +6,10 @@ import java.util.Objects;
  * Quản lý thông tin và các thao tác nghiệp vụ đối với sản phẩm.
  */
 public class Product {
-    private String id;              // Mã định danh sản phẩm
-    private String name;            // Tên sản phẩm
-    private double price;           // Đơn giá sản phẩm
-    private int stockQuantity;      // Số lượng tồn kho
+    private String id; // Mã định danh sản phẩm
+    private String name; // Tên sản phẩm
+    private double price; // Đơn giá sản phẩm
+    private int stockQuantity; // Số lượng tồn kho
 
     public Product(String id, String name, double price, int stockQuantity) {
         if (id == null || id.trim().isEmpty()) {
@@ -46,7 +46,8 @@ public class Product {
         if (quantity <= 0) {
             throw new IllegalArgumentException("Số lượng thêm vào kho phải lớn hơn 0");
         }
-        this.stockQuantity += quantity;
+        // this.stockQuantity += quantity;
+        this.stockQuantity = Math.addExact(stockQuantity, quantity);
     }
 
     // Cập nhật giá bán mới
@@ -75,13 +76,13 @@ public class Product {
 
     @Override
     public String toString() {
-        return String.format("Product[id='%s', name='%s', price=%,.0fđ, stock=%d]", 
+        return String.format("Product[id='%s', name='%s', price=%,.0fđ, stock=%d]",
                 id, name, price, stockQuantity);
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj){
+        if (this == obj) {
             return true;
         }
         if (obj == null || getClass() != obj.getClass()) {
