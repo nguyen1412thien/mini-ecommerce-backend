@@ -47,8 +47,15 @@ public class Order {
         double total = this.calculateTotal();
         if (discountStrategy == null) {
             return total;
+        }
+        double discount = discountStrategy.applyDiscount(total);
+        if (discount < 0) {
+            throw new IllegalStateException("Số tiền giảm giá không hợp lệ");
+        }
+        if (discount > total) {
+            return 0.0;
         } else {
-            return total - discountStrategy.applyDiscount(total);
+            return total - discount;
         }
     }
 
