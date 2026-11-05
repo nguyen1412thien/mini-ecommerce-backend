@@ -25,15 +25,17 @@ public class ProductRepository {
 
     // tim Product theo id
     public Product findById(String id) {
-        if (products.containsKey(id)) {
-            return products.get(id);
-        } else {
-            return null;
+        if (id == null || id.trim().isEmpty()) {
+            throw new IllegalArgumentException("Mã sản phẩm không được để trống");
         }
+        return products.get(id);
     }
 
     // kiem tra san pham co id = .. da ton tai chua
     public boolean existsById(String id) {
+        if (id == null || id.trim().isEmpty()) {
+            throw new IllegalArgumentException("Mã sản phẩm không được để trống");
+        }
         return products.containsKey(id);
     }
 
@@ -45,11 +47,15 @@ public class ProductRepository {
 
     // xoa san pham trong kho
     public boolean deleteById(String id) {
-        if (this.products.containsKey(id)) {
-            this.products.remove(id);
-            return true;
-        } else {
+        if (id == null || id.trim().isEmpty()) {
+            throw new IllegalArgumentException("Mã sản phẩm không được để trống");
+        }
+        Product rm = this.products.remove(id);
+        if (rm == null) {
             return false;
+        }
+        else {
+            return true;
         }
     }
 
@@ -88,7 +94,7 @@ public class ProductRepository {
     // phân biệt chữ hoa, chữ thường)
     public List<Product> findAllSortedByName() {
         List<Product> list = this.findAll();
-        list.sort((p1,p2)-> p1.getName().compareToIgnoreCase(p2.getName()));
+        list.sort((p1, p2) -> p1.getName().compareToIgnoreCase(p2.getName()));
         return list;
     }
 }

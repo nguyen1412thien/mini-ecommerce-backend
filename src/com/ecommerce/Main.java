@@ -59,7 +59,7 @@ public class Main {
         // Kịch bản 3: Kiểm chứng Hợp đồng `equals()` & `hashCode()` và Khử trùng trong
         // `HashSet`
         Product p1 = new Product("P10", "Máy bay", 150000000.0, 1);
-        Product p2 = new Product("P10", "Máy bay chiến đấu", 250000000.0, 3);
+        Product p2 = new Product("P10", "Máy bay thương mại", 250000000.0, 3);
         System.out.println(p1.equals(p2));
 
         Set<Product> set = new HashSet<>();
@@ -90,6 +90,23 @@ public class Main {
         for (Product product : list) {
             System.out.println(product.getName() + " " + product.getPrice());
         }
+        System.out.println();
+        System.out.println();
+        Product mayBayChienDau = new Product("P100", "Máy bay chiến đấu", 1000000000.0, 2000000000);
+        try {
+            mayBayChienDau.addStock(500000000);
+        } catch (ArithmeticException e) {
+            System.out.println("Hệ thống đã chặn thành công sự cố tràn số tồn kho");
+        }
+        try {
+            productRepository.findById(null);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Hệ thống đã chặn thành công dữ liệu rác");
+        }
 
+        productRepository.save(mayBayChienDau);
+        System.out.println(productRepository.findById("P100"));
+        System.out.println(productRepository.deleteById("P100"));
+        System.out.println(productRepository.findById("P100"));
     }
 }
