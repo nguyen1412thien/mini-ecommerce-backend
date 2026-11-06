@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.ecommerce.exception.ProductNotFoundException;
 import com.ecommerce.model.product.Product;
@@ -108,7 +109,7 @@ public class ProductRepository {
         }
         return this.findAll().stream()
                 .filter(p -> p.getPrice() >= minPrice && p.getPrice() <= maxPrice)
-                .sorted((p1,p2) -> Double.compare(p1.getPrice(), p2.getPrice()))
+                .sorted((p1, p2) -> Double.compare(p1.getPrice(), p2.getPrice()))
                 .toList();
     }
 
@@ -139,4 +140,35 @@ public class ProductRepository {
                 .toList();
     }
 
+    // Tính tổng giá trị tiền tệ của toàn bộ hàng hóa đang tồn kho
+    public double calculateTotalInventoryValue() {
+        return this.findAll().stream()
+                .collect(Collectors.summingDouble(p -> p.getPrice() * p.getStockQuantity()));
+    }
+
+    // Tính giá bán trung bình của các sản phẩm hiện có trong kho hàng
+    public double calculateAveragePrice() {
+        return this.findAll().stream()
+                .filter(p -> p.getStockQuantity() > 0)
+                .collect(Collectors.averagingDouble(p -> p.getPrice()));
+    }
+
+    // Phân loại toàn bộ sản phẩm trong kho thành 2 nhóm dựa trên trạng thái số
+    // lượng tồn kho
+    public Map<String, List<Product>> groupProductsByStockStatus() {
+        return this.findAll().stream()
+                .collect(Collectors.groupingBy(p -> p.getStockQuantity() > 0 ? "IN_STOCK" : "OUT_OF_STOCK"));
+    }
+
+    // Nối toàn bộ Tên của các sản phẩm hiện có trong kho thành một chuỗi văn bản
+    // duy nhất, phân tách bởi chuỗi ký tự phân cách delimiter (ví dụ: ", " hoặc " |
+    // ")
+    public String getAllProductNamesJoined(String delimiter) {
+        if (delimiter == null) {
+            throw new IllegalArgumentException("Ký tự phân cách không được để trống");
+        }
+        return this.findAll().stream()
+                .map(p -> p.getName())
+                .collect(Collectors.joining(delimiter));
+    }
 }
