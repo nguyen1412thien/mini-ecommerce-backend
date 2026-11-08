@@ -149,7 +149,6 @@ public class ProductRepository {
     // Tính giá bán trung bình của các sản phẩm hiện có trong kho hàng
     public double calculateAveragePrice() {
         return this.findAll().stream()
-                .filter(p -> p.getStockQuantity() > 0)
                 .collect(Collectors.averagingDouble(p -> p.getPrice()));
     }
 
