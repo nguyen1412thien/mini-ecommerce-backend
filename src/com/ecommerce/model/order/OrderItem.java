@@ -1,14 +1,16 @@
 package com.ecommerce.model.order;
 
+import java.math.BigDecimal;
+
 import com.ecommerce.model.product.Product;
 
 /**
  * Đại diện cho một mặt hàng cụ thể trong đơn hàng.
  */
 public class OrderItem {
-    private final Product product;  // Sản phẩm được đặt mua
-    private int quantity;           // Số lượng đặt mua
-    private final double unitPrice; // Đơn giá tại thời điểm đặt hàng
+    private final Product product; // Sản phẩm được đặt mua
+    private int quantity; // Số lượng đặt mua
+    private final BigDecimal unitPrice; // Đơn giá tại thời điểm đặt hàng
 
     public OrderItem(Product product, int quantity) {
         if (product == null) {
@@ -26,8 +28,8 @@ public class OrderItem {
     }
 
     // Tính thành tiền của mặt hàng (đơn giá * số lượng)
-    public double calculateSubtotal() {
-        return this.quantity * this.unitPrice;
+    public BigDecimal calculateSubtotal() {
+        return BigDecimal.valueOf(this.quantity).multiply(unitPrice);
     }
 
     // Cập nhật số lượng của mặt hàng
@@ -46,7 +48,7 @@ public class OrderItem {
         return quantity;
     }
 
-    public double getUnitPrice() {
-        return unitPrice;
+    public BigDecimal getUnitPrice() {
+        return this.unitPrice;
     }
 }

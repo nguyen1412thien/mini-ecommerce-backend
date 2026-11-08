@@ -1,5 +1,6 @@
 package com.ecommerce.model.product;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 /**
@@ -8,17 +9,20 @@ import java.util.Objects;
 public class Product {
     private String id; // Mã định danh sản phẩm
     private String name; // Tên sản phẩm
-    private double price; // Đơn giá sản phẩm
+    private BigDecimal price; // Đơn giá sản phẩm
     private int stockQuantity; // Số lượng tồn kho
 
-    public Product(String id, String name, double price, int stockQuantity) {
+    public Product(String id, String name, BigDecimal price, int stockQuantity) {
         if (id == null || id.trim().isEmpty()) {
             throw new IllegalArgumentException("Mã sản phẩm không được để trống");
         }
         if (name == null || name.trim().isEmpty()) {
             throw new IllegalArgumentException("Tên sản phẩm không được để trống");
         }
-        if (price <= 0) {
+        if (price == null) {
+            throw new IllegalArgumentException("Giá sản phẩm không được để trống");
+        }
+        if (price.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Giá sản phẩm phải lớn hơn 0");
         }
         if (stockQuantity < 0) {
@@ -51,8 +55,8 @@ public class Product {
     }
 
     // Cập nhật giá bán mới
-    public void updatePrice(double newPrice) {
-        if (newPrice <= 0) {
+    public void updatePrice(BigDecimal newPrice) {
+        if (newPrice == null || newPrice.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Giá mới phải lớn hơn 0");
         }
         this.price = newPrice;
@@ -66,7 +70,7 @@ public class Product {
         return this.name;
     }
 
-    public double getPrice() {
+    public BigDecimal getPrice() {
         return this.price;
     }
 

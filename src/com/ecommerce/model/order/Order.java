@@ -1,5 +1,6 @@
 package com.ecommerce.model.order;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -34,28 +35,28 @@ public class Order {
     }
 
     // Tính tổng tiền các mặt hàng trước khi áp dụng giảm giá
-    public double calculateTotal() {
-        double total = 0.0;
+    public BigDecimal calculateTotal() {
+        BigDecimal total = new BigDecimal(0);
         for (OrderItem item : items) {
-            total += item.calculateSubtotal();
+            total = total.add(item.calculateSubtotal());
         }
         return total;
     }
 
     // Tính tổng tiền thanh toán cuối cùng sau khi áp dụng chiến lược giảm giá
-    public double calculateFinalTotal(DiscountStrategy discountStrategy) {
-        double total = this.calculateTotal();
+    public BigDecimal calculateFinalTotal(DiscountStrategy discountStrategy) {
+        BigDecimal total = this.calculateTotal();
         if (discountStrategy == null) {
             return total;
         }
-        double discount = discountStrategy.applyDiscount(total);
-        if (discount < 0) {
+        BigDecimal discount = discountStrategy.applyDiscount(total);
+        if (discount.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalStateException("Số tiền giảm giá không hợp lệ");
         }
-        if (discount > total) {
-            return 0.0;
+        if (discount.compareTo(total) > 0) {
+            return BigDecimal.ZERO;
         } else {
-            return total - discount;
+            return total.subtract(discount);
         }
     }
 

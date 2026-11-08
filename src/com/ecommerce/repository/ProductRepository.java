@@ -1,5 +1,7 @@
 package com.ecommerce.repository;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -79,14 +81,14 @@ public class ProductRepository {
     // tra ve danh sach sap xep theo gia tang dan (thap -> cao)
     public List<Product> findAllSortedByPriceAsc() {
         List<Product> list = this.findAll();
-        list.sort((p1, p2) -> Double.compare(p1.getPrice(), p2.getPrice()));
+        list.sort((p1, p2) -> p1.getPrice().compareTo(p2.getPrice()));
         return list;
     }
 
     // tra ve danh sach sap xep theo gia giam dan (cao -> thap)
     public List<Product> findAllSortedByPriceDesc() {
         List<Product> list = this.findAll();
-        list.sort((p1, p2) -> Double.compare(p2.getPrice(), p1.getPrice()));
+        list.sort((p1, p2) -> p2.getPrice().compareTo(p1.getPrice()));
         return list;
     }
 
@@ -100,16 +102,19 @@ public class ProductRepository {
 
     // Tìm và trả về danh sách các sản phẩm có đơn giá nằm trong đoạn từ `minPrice`
     // đến `maxPrice`
-    public List<Product> findByPriceRange(double minPrice, double maxPrice) {
-        if (minPrice < 0 || maxPrice < 0) {
+    public List<Product> findByPriceRange(BigDecimal minPrice, BigDecimal maxPrice) {
+        if (minPrice == null || maxPrice == null) {
+            throw new IllegalArgumentException("Giá tìm kiếm không được để trống");
+        }
+        if (minPrice.compareTo(BigDecimal.ZERO) < 0 || maxPrice.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException("Giá tìm kiếm không được âm");
         }
-        if (minPrice > maxPrice) {
+        if (minPrice.compareTo(maxPrice) > 0) {
             throw new IllegalArgumentException("Giá tối thiểu không được lớn hơn giá tối đa");
         }
         return this.findAll().stream()
-                .filter(p -> p.getPrice() >= minPrice && p.getPrice() <= maxPrice)
-                .sorted((p1, p2) -> Double.compare(p1.getPrice(), p2.getPrice()))
+                .filter(p -> p.getPrice().compareTo(minPrice) >= 0 && p.getPrice().compareTo(maxPrice) <= 0)
+                .sorted((p1, p2) -> p1.getPrice().compareTo(p2.getPrice()))
                 .toList();
     }
 
@@ -135,21 +140,28 @@ public class ProductRepository {
             throw new IllegalArgumentException("Số lượng giới hạn phải lớn hơn 0");
         }
         return this.findAll().stream()
-                .sorted((p1, p2) -> Double.compare(p2.getPrice(), p1.getPrice()))
+                .sorted((p1, p2) -> p2.getPrice().compareTo(p1.getPrice()))
                 .limit(limit)
                 .toList();
     }
 
     // Tính tổng giá trị tiền tệ của toàn bộ hàng hóa đang tồn kho
-    public double calculateTotalInventoryValue() {
+    public BigDecimal calculateTotalInventoryValue() {
         return this.findAll().stream()
-                .collect(Collectors.summingDouble(p -> p.getPrice() * p.getStockQuantity()));
+                .map(p -> p.getPrice().multiply(BigDecimal.valueOf(p.getStockQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     // Tính giá bán trung bình của các sản phẩm hiện có trong kho hàng
-    public double calculateAveragePrice() {
-        return this.findAll().stream()
-                .collect(Collectors.averagingDouble(p -> p.getPrice()));
+    public BigDecimal calculateAveragePrice() {
+        if (this.count() == 0) {
+            return BigDecimal.ZERO;
+        }
+        BigDecimal totalUnitPrice = new BigDecimal(0);
+        totalUnitPrice = totalUnitPrice
+                .add(this.findAll().stream().map(p -> p.getPrice()).reduce(BigDecimal.ZERO, BigDecimal::add));
+        return totalUnitPrice.divide(BigDecimal.valueOf(this.count()), 0, RoundingMode.HALF_UP);
+
     }
 
     // Phân loại toàn bộ sản phẩm trong kho thành 2 nhóm dựa trên trạng thái số

@@ -1,5 +1,8 @@
 package com.ecommerce.model.discount;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 /**
  * Chiến lược giảm giá theo tỷ lệ phần trăm.
  */
@@ -15,10 +18,14 @@ public class PercentageDiscount implements DiscountStrategy {
 
     // Áp dụng tính số tiền giảm theo phần trăm
     @Override
-    public double applyDiscount(double originalTotal) {
-        if (originalTotal <= 0) {
+    public BigDecimal applyDiscount(BigDecimal originalTotal) {
+        if (originalTotal == null) {
+            throw new IllegalArgumentException("Tổng đơn hàng không được để trống");
+        }
+        if (originalTotal.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Tong hon hang phai lon hon 0");
         }
-        return originalTotal * this.percentage / 100.0;
+        return originalTotal.multiply(BigDecimal.valueOf(percentage)).divide(BigDecimal.valueOf(100)).setScale(0,
+                RoundingMode.HALF_UP);
     }
 }

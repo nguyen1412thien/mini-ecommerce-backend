@@ -1,13 +1,18 @@
 package com.ecommerce.model.discount;
 
+import java.math.BigDecimal;
+
 /**
  * Chiến lược giảm giá theo một số tiền cố định.
  */
 public class FixedAmountDiscount implements DiscountStrategy {
-    private double amount; // Số tiền giảm giá cố định
+    private BigDecimal amount; // Số tiền giảm giá cố định
 
-    public FixedAmountDiscount(double amount) {
-        if (amount <= 0) {
+    public FixedAmountDiscount(BigDecimal amount) {
+        if (amount == null) {
+            throw new IllegalArgumentException("Số tiền giảm giá không được để trống");
+        }
+        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("So tien giam phai lon hon 0");
         }
         this.amount = amount;
@@ -15,11 +20,14 @@ public class FixedAmountDiscount implements DiscountStrategy {
 
     // Áp dụng trừ số tiền cố định (không vượt quá tổng giá trị đơn hàng)
     @Override
-    public double applyDiscount(double originalTotal) {
-        if (originalTotal <= 0) {
-            throw new IllegalArgumentException("Tong don hang phai lon hon 0");
+    public BigDecimal applyDiscount(BigDecimal originalTotal) {
+        if (originalTotal == null) {
+            throw new IllegalArgumentException("Tổng đơn hàng không được để trống");
         }
-        if (this.amount > originalTotal) {
+        if (originalTotal.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Tổng đơn hàng phải lớn hơn không");
+        }
+        if (this.amount.compareTo(originalTotal) > 0) {
             return originalTotal;
         } else {
             return amount;
