@@ -24,7 +24,7 @@ backend/
             │       └── FixedAmountDiscount.java# Giảm giá cố định (chặn vượt quá tổng tiền)
             │
             ├── repository/                     # Data Access Layer
-            │   └── ProductRepository.java      # In-Memory O(1) HashMap, Defensive Validation, Lambda Sorting
+            │   └── ProductRepository.java      # In-Memory O(1) HashMap, Stream API Pipeline & Collectors, Lambda Sorting
             │
             ├── exception/                      # Custom Business Exceptions
             │   └── ProductNotFoundException.java # Runtime Exception khi không tìm thấy thực thể
@@ -53,6 +53,9 @@ backend/
 6. **Bảo Vệ Dòng Tiền & Chống Tràn Số (Financial Computing Safeguards):**
    - Sử dụng `Math.addExact()` trong `addStock` để chặn đứng rủi ro tràn số nguyên (Integer Overflow).
    - Kiểm chứng thực nghiệm sai số dấu phẩy động IEEE 754 của `double` và quy chuẩn so sánh tiền tệ với `BigDecimal.compareTo()`.
+7. **Khai Thác Java Stream API Pipeline & Gom Nhóm Thống Kê (Stream Collectors):**
+   - Xây dựng các luồng truy vấn dữ liệu động qua chuỗi `stream().filter().sorted().limit().toList()` (lọc khoảng giá, lấy danh sách tên, phân loại còn hàng, cắt lát Top N sản phẩm).
+   - Thống kê tài chính và gom nhóm dữ liệu nâng cao với `Collectors.summingDouble`, `Collectors.averagingDouble`, `Collectors.groupingBy` (phân nhóm `IN_STOCK`/`OUT_OF_STOCK`) và `Collectors.joining`.
 
 ---
 
