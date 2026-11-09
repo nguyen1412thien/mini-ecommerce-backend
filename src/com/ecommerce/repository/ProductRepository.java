@@ -157,7 +157,7 @@ public class ProductRepository {
         if (this.count() == 0) {
             return BigDecimal.ZERO;
         }
-        BigDecimal totalUnitPrice = new BigDecimal(0);
+        BigDecimal totalUnitPrice = BigDecimal.ZERO;
         totalUnitPrice = totalUnitPrice
                 .add(this.findAll().stream().map(p -> p.getPrice()).reduce(BigDecimal.ZERO, BigDecimal::add));
         return totalUnitPrice.divide(BigDecimal.valueOf(this.count()), 0, RoundingMode.HALF_UP);

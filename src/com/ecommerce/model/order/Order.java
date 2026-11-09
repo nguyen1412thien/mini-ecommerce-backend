@@ -36,7 +36,7 @@ public class Order {
 
     // Tính tổng tiền các mặt hàng trước khi áp dụng giảm giá
     public BigDecimal calculateTotal() {
-        BigDecimal total = new BigDecimal(0);
+        BigDecimal total = BigDecimal.ZERO;
         for (OrderItem item : items) {
             total = total.add(item.calculateSubtotal());
         }
