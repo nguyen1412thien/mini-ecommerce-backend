@@ -23,10 +23,10 @@ public class Product {
             throw new IllegalArgumentException("Giá sản phẩm không được để trống");
         }
         if (price.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("Giá sản phẩm phải lớn hơn 0");
+            throw new IllegalArgumentException("Giá sản phẩm " + price + " không hợp lệ, phải lớn hơn 0");
         }
         if (stockQuantity < 0) {
-            throw new IllegalArgumentException("Số lượng tồn kho không thể âm");
+            throw new IllegalArgumentException("Số lượng tồn kho " + stockQuantity + " không hợp lệ, không được âm");
         }
         this.id = id;
         this.name = name;
@@ -37,10 +37,11 @@ public class Product {
     // Trừ số lượng tồn kho khi bán hàng
     public void deductStock(int quantity) {
         if (quantity <= 0) {
-            throw new IllegalArgumentException("Số lượng trừ tồn kho phải lớn hơn 0");
+            throw new IllegalArgumentException("Số lượng trừ tồn kho " + quantity + " không hợp lệ, phải lớn hơn 0");
         }
         if (quantity > this.stockQuantity) {
-            throw new IllegalStateException("Hàng trong kho không đủ! Hiện chỉ còn: " + this.stockQuantity);
+            throw new IllegalStateException("Số lượng đặt hàng là " + quantity + ", vượt quá tồn kho hiện có là "
+                    + this.stockQuantity + ". Vui lòng giảm số lượng đặt hàng");
         }
         this.stockQuantity -= quantity;
     }
@@ -48,7 +49,7 @@ public class Product {
     // Nhập thêm hàng vào kho
     public void addStock(int quantity) {
         if (quantity <= 0) {
-            throw new IllegalArgumentException("Số lượng thêm vào kho phải lớn hơn 0");
+            throw new IllegalArgumentException("Số lượng thêm vào kho " + quantity + " không hợp lệ, phải lớn hơn 0");
         }
         // this.stockQuantity += quantity;
         this.stockQuantity = Math.addExact(stockQuantity, quantity);
@@ -56,8 +57,11 @@ public class Product {
 
     // Cập nhật giá bán mới
     public void updatePrice(BigDecimal newPrice) {
-        if (newPrice == null || newPrice.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("Giá mới phải lớn hơn 0");
+        if (newPrice == null) {
+            throw new IllegalArgumentException("Giá mới không được để trống");
+        }
+        if (newPrice.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Giá mới " + newPrice + " không hợp lệ, phải lớn hơn 0");
         }
         this.price = newPrice;
     }

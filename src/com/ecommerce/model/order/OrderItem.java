@@ -17,10 +17,11 @@ public class OrderItem {
             throw new IllegalArgumentException("Sản phẩm không được để trống");
         }
         if (quantity <= 0) {
-            throw new IllegalArgumentException("Số lượng phải lớn hơn 0");
+            throw new IllegalArgumentException("Số lượng mặt hàng phải lớn hơn 0");
         }
         if (quantity > product.getStockQuantity()) {
-            throw new IllegalStateException("Thông báo số lượng đặt vượt quá tồn kho hiện tại");
+            throw new IllegalStateException("Số lượng đặt hàng là " + quantity + ", vượt quá tồn kho hiện có là "
+                    + product.getStockQuantity() + ". Vui lòng giảm số lượng đặt hàng");
         }
         this.product = product;
         this.quantity = quantity;
@@ -35,7 +36,7 @@ public class OrderItem {
     // Cập nhật số lượng của mặt hàng
     public void updateQuantity(int newQuantity) {
         if (newQuantity <= 0) {
-            throw new IllegalArgumentException("So luong hang phai lon hon 0");
+            throw new IllegalArgumentException("Số lượng mặt hàng " + newQuantity + " không hợp lệ, phải lớn hơn 0");
         }
         this.quantity = newQuantity;
     }

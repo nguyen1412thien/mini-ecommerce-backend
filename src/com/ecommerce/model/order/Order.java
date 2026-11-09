@@ -17,10 +17,10 @@ public class Order {
 
     public Order(String id, String customerName) {
         if (id == null || id.isBlank()) {
-            throw new IllegalArgumentException("ID khong duoc de trong");
+            throw new IllegalArgumentException("ID không được để trống");
         }
         if (customerName == null || customerName.isBlank()) {
-            throw new IllegalArgumentException("Ten khac hang khong duoc de rong");
+            throw new IllegalArgumentException("Tên khách hàng không được để trống");
         }
         this.id = id;
         this.customerName = customerName;
@@ -29,7 +29,7 @@ public class Order {
     // Thêm một mặt hàng vào đơn hàng
     public void addItem(OrderItem item) {
         if (item == null) {
-            throw new IllegalArgumentException("item khong duoc de trong");
+            throw new IllegalArgumentException("Mặt hàng không được để trống");
         }
         this.items.add(item);
     }
@@ -51,7 +51,7 @@ public class Order {
         }
         BigDecimal discount = discountStrategy.applyDiscount(total);
         if (discount.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalStateException("Số tiền giảm giá không hợp lệ");
+            throw new IllegalStateException("Số tiền giảm giá " + discount + " không hợp lệ, không được nhỏ hơn 0");
         }
         if (discount.compareTo(total) > 0) {
             return BigDecimal.ZERO;
