@@ -21,7 +21,7 @@ public class ProductRepository {
     // luu Product
     public void save(Product product) {
         if (product == null) {
-            throw new IllegalArgumentException("Product khong duoc de trong");
+            throw new IllegalArgumentException("Sản phẩm không được để trống");
         }
         products.put(product.getId(), product);
     }
@@ -70,7 +70,7 @@ public class ProductRepository {
     public Product getOrThrow(String id) {
         Product product = this.findById(id);
         if (product == null) {
-            throw new ProductNotFoundException("Khong tim thay san pham co ID " + id);
+            throw new ProductNotFoundException("Không tìm thấy sản phẩm có ID " + id);
         } else {
 
             return product;
@@ -106,11 +106,15 @@ public class ProductRepository {
         if (minPrice == null || maxPrice == null) {
             throw new IllegalArgumentException("Giá tìm kiếm không được để trống");
         }
-        if (minPrice.compareTo(BigDecimal.ZERO) < 0 || maxPrice.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("Giá tìm kiếm không được âm");
+        if (minPrice.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Giá tìm kiếm " + minPrice + " không hợp lệ, không được âm");
+        }
+        if (maxPrice.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Giá tìm kiếm " + maxPrice + " không hợp lệ, không được âm");
         }
         if (minPrice.compareTo(maxPrice) > 0) {
-            throw new IllegalArgumentException("Giá tối thiểu không được lớn hơn giá tối đa");
+            throw new IllegalArgumentException(
+                    "Giá tối thiểu " + minPrice + " không được lớn hơn giá tối đa " + maxPrice);
         }
         return this.findAll().stream()
                 .filter(p -> p.getPrice().compareTo(minPrice) >= 0 && p.getPrice().compareTo(maxPrice) <= 0)
@@ -137,7 +141,7 @@ public class ProductRepository {
     // giá từ cao xuống thấp và chỉ lấy đúng số lượng phần tử theo `limit`).
     public List<Product> findTopExpensiveProducts(int limit) {
         if (limit <= 0) {
-            throw new IllegalArgumentException("Số lượng giới hạn phải lớn hơn 0");
+            throw new IllegalArgumentException("Số lượng giới hạn " + limit + " không hợp lệ, phải lớn hơn 0");
         }
         return this.findAll().stream()
                 .sorted((p1, p2) -> p2.getPrice().compareTo(p1.getPrice()))

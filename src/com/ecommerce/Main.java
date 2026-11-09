@@ -43,7 +43,8 @@ public class Main {
         System.out.println("Tổng đơn: " + order.calculateTotal());
         System.out.println("Giảm 10%: " + new PercentageDiscount(10).applyDiscount(order.calculateTotal()));
         System.out.println("Sau giảm 10%: " + order.calculateFinalTotal(new PercentageDiscount(10)));
-        System.out.println("Sau voucher 500đ: " + order.calculateFinalTotal(new FixedAmountDiscount(BigDecimal.valueOf(500))));
+        System.out.println(
+                "Sau voucher 500đ: " + order.calculateFinalTotal(new FixedAmountDiscount(BigDecimal.valueOf(500))));
 
         Product roundingProduct = new Product("P05", "Sản phẩm làm tròn", BigDecimal.valueOf(10001), 1);
         Order roundingOrder = new Order("O02", "Khách hàng mẫu");

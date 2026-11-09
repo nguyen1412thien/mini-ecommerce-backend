@@ -13,7 +13,7 @@ public class FixedAmountDiscount implements DiscountStrategy {
             throw new IllegalArgumentException("Số tiền giảm giá không được để trống");
         }
         if (amount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("So tien giam phai lon hon 0");
+            throw new IllegalArgumentException("Số tiền giảm giá " + amount + " không hợp lệ, phải lớn hơn 0");
         }
         this.amount = amount;
     }
@@ -25,7 +25,7 @@ public class FixedAmountDiscount implements DiscountStrategy {
             throw new IllegalArgumentException("Tổng đơn hàng không được để trống");
         }
         if (originalTotal.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("Tổng đơn hàng phải lớn hơn không");
+            throw new IllegalArgumentException("Tổng đơn hàng " + originalTotal + " không hợp lệ, phải lớn hơn 0");
         }
         if (this.amount.compareTo(originalTotal) > 0) {
             return originalTotal;
