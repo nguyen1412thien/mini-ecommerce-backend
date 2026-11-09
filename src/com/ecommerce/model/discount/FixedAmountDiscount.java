@@ -25,7 +25,8 @@ public class FixedAmountDiscount implements DiscountStrategy {
             throw new IllegalArgumentException("Tổng đơn hàng không được để trống");
         }
         if (originalTotal.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("Tổng đơn hàng " + originalTotal + " không hợp lệ, phải lớn hơn 0");
+            throw new IllegalArgumentException(
+                    "Tổng đơn hàng hiện tại là " + originalTotal + " không hợp lệ, phải lớn hơn 0");
         }
         if (this.amount.compareTo(originalTotal) > 0) {
             return originalTotal;
