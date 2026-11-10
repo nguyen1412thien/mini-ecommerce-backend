@@ -1,16 +1,20 @@
 package com.ecommerce.model.product;
 
 import java.math.BigDecimal;
+import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 /**
  * Quản lý thông tin và các thao tác nghiệp vụ đối với sản phẩm.
  */
 public class Product {
-    private String id; // Mã định danh sản phẩm
+    private final String id; // Mã định danh sản phẩm
     private String name; // Tên sản phẩm
     private BigDecimal price; // Đơn giá sản phẩm
     private int stockQuantity; // Số lượng tồn kho
+    private Map<String, StockReservation> reservations = new HashMap<>();
 
     public Product(String id, String name, BigDecimal price, int stockQuantity) {
         if (id == null || id.trim().isEmpty()) {
@@ -34,14 +38,19 @@ public class Product {
         this.stockQuantity = stockQuantity;
     }
 
-    // Trừ số lượng tồn kho khi bán hàng
-    public void deductStock(int quantity) {
+    // Trừ hàng trực tiếp từ phần tồn khả dụng, không được lẹm vào hàng đơn khác
+    // đang giữ
+    public void deductStock(int quantity, Instant now) {
         if (quantity <= 0) {
-            throw new IllegalArgumentException("Số lượng trừ tồn kho " + quantity + " không hợp lệ, phải lớn hơn 0");
+            throw new IllegalArgumentException("Số lượng trừ hàng phải lớn hơn 0");
         }
-        if (quantity > this.stockQuantity) {
-            throw new IllegalStateException("Số lượng đặt hàng là " + quantity + ", vượt quá tồn kho hiện có là "
-                    + this.stockQuantity + ". Vui lòng giảm số lượng đặt hàng");
+        if (now == null) {
+            throw new IllegalArgumentException("Thời gian trừ hàng không được để trống");
+        }
+        int availableStock = getAvailableStock(now);
+        if (quantity > availableStock) {
+            throw new IllegalArgumentException("Số lượng trừ hàng " + quantity
+                    + " vượt quá số lượng tồn kho khả dụng là " + availableStock);
         }
         this.stockQuantity -= quantity;
     }
@@ -80,6 +89,91 @@ public class Product {
 
     public int getStockQuantity() {
         return this.stockQuantity;
+    }
+
+    public int getAvailableStock(Instant now) {
+        if (now == null) {
+            throw new IllegalArgumentException("Thời điểm hiện tại không được để trống");
+        }
+        int reservedQuantity; // Tổng số lượng đang bị giữ chỗ (còn hạn)
+        reservedQuantity = this.reservations.values().stream()
+                .filter(r -> !r.isExpired(now))
+                .mapToInt(StockReservation::getQuantity)
+                .sum();
+        return stockQuantity - reservedQuantity;
+    }
+
+    // Đặt giữ chỗ một lượng sản phẩm cho đơn hàng orderId đến thời điểm expiresAt
+    public void reserveStock(String orderId, int quantity, Instant expiresAt, Instant now) {
+        if (now == null) {
+            throw new IllegalArgumentException("Thời điểm hiện tại không được để trống");
+        }
+        if (orderId == null || orderId.isBlank()) {
+            throw new IllegalArgumentException("Mã đơn hàng đang giữ chỗ không được để trống");
+        }
+        if (quantity <= 0) {
+            throw new IllegalArgumentException("Số lượng giữ chỗ " + quantity + " không hợp lệ, phải lớn hơn 0");
+        }
+        if (expiresAt == null) {
+            throw new IllegalArgumentException("Thời điểm hết hạn không được để trống");
+        }
+        if (!expiresAt.isAfter(now)) {
+            throw new IllegalArgumentException("Thời điểm hết hạn phải sau thời điểm hiện tại");
+        }
+        StockReservation existingReservation = this.reservations.get(orderId);
+        int delta;
+        if (existingReservation == null || existingReservation.isExpired(now)) {
+            delta = quantity;
+        } else {
+            delta = quantity - existingReservation.getQuantity();
+        }
+        int availableStock = getAvailableStock(now);
+        if (delta > availableStock) {
+            throw new IllegalArgumentException("Số lượng giữ chỗ " + quantity
+                    + " vượt quá số lượng tồn kho khả dụng là " + availableStock);
+        } else {
+            this.reservations.put(orderId, new StockReservation(orderId, quantity, expiresAt));
+        }
+    }
+
+    // Hủy phiếu giữ chỗ khi đơn hàng bị hủy hoặc hết hạn
+    public void releaseReservation(String orderId) {
+        if (orderId == null || orderId.isBlank()) {
+            throw new IllegalArgumentException("Mã đơn hàng đang giữ chỗ không được để trống");
+        }
+        this.reservations.remove(orderId);
+    }
+
+    // Chốt trừ tồn vật lý & xóa phiếu giữ chỗ cùng lúc khi đơn được xác nhận
+    public int commitReservation(String orderId) {
+        if (orderId == null || orderId.isBlank()) {
+            throw new IllegalArgumentException("Mã đơn hàng đang giữ chỗ không được để trống");
+        }
+        StockReservation existingReservation = reservations.get(orderId);
+        if (existingReservation == null) {
+            throw new IllegalStateException("Không tìm thấy giữ chỗ cho đơn hàng " + orderId);
+        } else {
+            int quantity = existingReservation.getQuantity();
+            this.stockQuantity -= quantity;
+            this.reservations.remove(orderId);
+            return quantity;
+        }
+    }
+
+    // Cập nhật số lượng tồn kho mới, không được nhỏ hơn số lượng đang giữ chỗ
+    public void updateStock(int newStock, Instant now) {
+        if (newStock < 0) {
+            throw new IllegalArgumentException("Số lượng tồn kho không được âm");
+        }
+        if (now == null) {
+            throw new IllegalArgumentException("Thời điểm hiện tại không được để trống");
+        }
+        int reserved = stockQuantity - getAvailableStock(now);
+        if (newStock < reserved) {
+            throw new IllegalArgumentException("Số lượng tồn kho mới " + newStock
+                    + " không thể nhỏ hơn số lượng đang giữ chỗ là " + reserved);
+        }
+        this.stockQuantity = newStock;
     }
 
     @Override
