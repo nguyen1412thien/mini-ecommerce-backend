@@ -6,7 +6,8 @@ import java.math.BigDecimal;
  * Chiến lược giảm giá theo một số tiền cố định.
  */
 public class FixedAmountDiscount implements DiscountStrategy {
-    private BigDecimal amount; // Số tiền giảm giá cố định
+    /** Số tiền giảm giá cố định */
+    private BigDecimal amount;
 
     public FixedAmountDiscount(BigDecimal amount) {
         if (amount == null) {
@@ -18,7 +19,9 @@ public class FixedAmountDiscount implements DiscountStrategy {
         this.amount = amount;
     }
 
-    // Áp dụng trừ số tiền cố định (không vượt quá tổng giá trị đơn hàng)
+    /**
+     * Áp dụng trừ số tiền cố định (không vượt quá tổng giá trị đơn hàng).
+     */
     @Override
     public BigDecimal applyDiscount(BigDecimal originalTotal) {
         if (originalTotal == null) {

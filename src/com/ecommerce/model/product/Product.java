@@ -10,10 +10,19 @@ import java.util.Objects;
  * Quản lý thông tin và các thao tác nghiệp vụ đối với sản phẩm.
  */
 public class Product {
-    private final String id; // Mã định danh sản phẩm
-    private String name; // Tên sản phẩm
-    private BigDecimal price; // Đơn giá sản phẩm
-    private int stockQuantity; // Số lượng tồn kho
+    /** Mã định danh sản phẩm */
+    private final String id;
+
+    /** Tên sản phẩm */
+    private String name;
+
+    /** Đơn giá sản phẩm */
+    private BigDecimal price;
+
+    /** Số lượng tồn kho */
+    private int stockQuantity;
+
+    /** Danh sách phiếu giữ chỗ tồn kho theo từng mã đơn hàng */
     private Map<String, StockReservation> reservations = new HashMap<>();
 
     public Product(String id, String name, BigDecimal price, int stockQuantity) {
@@ -38,8 +47,9 @@ public class Product {
         this.stockQuantity = stockQuantity;
     }
 
-    // Trừ hàng trực tiếp từ phần tồn khả dụng, không được lẹm vào hàng đơn khác
-    // đang giữ
+    /**
+     * Trừ hàng trực tiếp từ phần tồn khả dụng, không được lẹm vào hàng đơn khác đang giữ.
+     */
     public void deductStock(int quantity, Instant now) {
         if (quantity <= 0) {
             throw new IllegalArgumentException("Số lượng trừ hàng phải lớn hơn 0");
@@ -55,7 +65,9 @@ public class Product {
         this.stockQuantity -= quantity;
     }
 
-    // Nhập thêm hàng vào kho
+    /**
+     * Nhập thêm hàng vào kho.
+     */
     public void addStock(int quantity) {
         if (quantity <= 0) {
             throw new IllegalArgumentException("Số lượng thêm vào kho " + quantity + " không hợp lệ, phải lớn hơn 0");
@@ -64,7 +76,9 @@ public class Product {
         this.stockQuantity = Math.addExact(stockQuantity, quantity);
     }
 
-    // Cập nhật giá bán mới
+    /**
+     * Cập nhật giá bán mới.
+     */
     public void updatePrice(BigDecimal newPrice) {
         if (newPrice == null) {
             throw new IllegalArgumentException("Giá mới không được để trống");
@@ -91,6 +105,9 @@ public class Product {
         return this.stockQuantity;
     }
 
+    /**
+     * Tính toán số lượng tồn kho khả dụng tại thời điểm now (tồn vật lý trừ đi các phiếu giữ chỗ còn hạn).
+     */
     public int getAvailableStock(Instant now) {
         if (now == null) {
             throw new IllegalArgumentException("Thời điểm hiện tại không được để trống");
@@ -103,7 +120,9 @@ public class Product {
         return stockQuantity - reservedQuantity;
     }
 
-    // Đặt giữ chỗ một lượng sản phẩm cho đơn hàng orderId đến thời điểm expiresAt
+    /**
+     * Đặt giữ chỗ một lượng sản phẩm cho đơn hàng orderId đến thời điểm expiresAt
+     */
     public void reserveStock(String orderId, int quantity, Instant expiresAt, Instant now) {
         if (now == null) {
             throw new IllegalArgumentException("Thời điểm hiện tại không được để trống");
@@ -136,7 +155,9 @@ public class Product {
         }
     }
 
-    // Hủy phiếu giữ chỗ khi đơn hàng bị hủy hoặc hết hạn
+    /**
+     * Hủy phiếu giữ chỗ khi đơn hàng bị hủy hoặc hết hạn.
+     */
     public void releaseReservation(String orderId) {
         if (orderId == null || orderId.isBlank()) {
             throw new IllegalArgumentException("Mã đơn hàng đang giữ chỗ không được để trống");
@@ -144,7 +165,9 @@ public class Product {
         this.reservations.remove(orderId);
     }
 
-    // Chốt trừ tồn vật lý & xóa phiếu giữ chỗ cùng lúc khi đơn được xác nhận
+    /**
+     * Chốt trừ tồn vật lý và xóa phiếu giữ chỗ cùng lúc khi đơn hàng được xác nhận.
+     */
     public int commitReservation(String orderId) {
         if (orderId == null || orderId.isBlank()) {
             throw new IllegalArgumentException("Mã đơn hàng đang giữ chỗ không được để trống");
@@ -160,7 +183,9 @@ public class Product {
         }
     }
 
-    // Cập nhật số lượng tồn kho mới, không được nhỏ hơn số lượng đang giữ chỗ
+    /**
+     * Cập nhật số lượng tồn kho mới, không được nhỏ hơn số lượng đang giữ chỗ còn hiệu lực.
+     */
     public void updateStock(int newStock, Instant now) {
         if (newStock < 0) {
             throw new IllegalArgumentException("Số lượng tồn kho không được âm");

@@ -8,9 +8,14 @@ import java.time.Instant;
  */
 
 public class StockReservation {
-    private String orderId; // Mã đơn hàng đang giữ chỗ
-    private int quantity; // Số lượng sản phẩm đang tạm giữ
-    private Instant expiresAt; // Thời điểm hết hạn
+    /** Mã đơn hàng đang giữ chỗ */
+    private String orderId;
+
+    /** Số lượng sản phẩm đang tạm giữ */
+    private int quantity;
+
+    /** Thời điểm hết hạn giữ chỗ */
+    private Instant expiresAt;
 
     public StockReservation(String orderId, int quantity, Instant expiresAt) {
         if (orderId == null || orderId.isBlank()) {
@@ -39,6 +44,9 @@ public class StockReservation {
         return expiresAt;
     }
 
+    /**
+     * Kiểm tra phiếu giữ chỗ đã hết hạn tại thời điểm now hay chưa.
+     */
     public boolean isExpired(Instant now) {
         if (now == null) {
             throw new IllegalArgumentException("Thời điểm hiện tại không được để trống");

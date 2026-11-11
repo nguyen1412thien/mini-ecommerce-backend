@@ -7,7 +7,8 @@ import java.math.RoundingMode;
  * Chiến lược giảm giá theo tỷ lệ phần trăm.
  */
 public class PercentageDiscount implements DiscountStrategy {
-    private double percentage; // Tỷ lệ phần trăm giảm giá (0 - 100)
+    /** Tỷ lệ phần trăm giảm giá (0 - 100) */
+    private double percentage;
 
     public PercentageDiscount(double percentage) {
         if (percentage >= 100 || percentage <= 0) {
@@ -17,7 +18,9 @@ public class PercentageDiscount implements DiscountStrategy {
         this.percentage = percentage;
     }
 
-    // Áp dụng tính số tiền giảm theo phần trăm
+    /**
+     * Áp dụng tính số tiền giảm theo phần trăm.
+     */
     @Override
     public BigDecimal applyDiscount(BigDecimal originalTotal) {
         if (originalTotal == null) {
