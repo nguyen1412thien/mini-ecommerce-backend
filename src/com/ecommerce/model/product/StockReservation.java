@@ -3,7 +3,8 @@ package com.ecommerce.model.product;
 import java.time.Instant;
 
 /**
- * Đại diện cho phiếu giữ chỗ tồn kho có thời hạn của một đơn hàng đối với sản phẩm.
+ * Đại diện cho phiếu giữ chỗ tồn kho có thời hạn của một đơn hàng đối với sản
+ * phẩm.
  * Phiếu chỉ còn hiệu lực trước mốc thời gian hết hạn (expiresAt).
  */
 

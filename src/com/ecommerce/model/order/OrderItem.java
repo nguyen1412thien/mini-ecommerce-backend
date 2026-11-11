@@ -8,9 +8,14 @@ import com.ecommerce.model.product.Product;
  * Đại diện cho một mặt hàng cụ thể trong đơn hàng.
  */
 public class OrderItem {
-    private final Product product; // Sản phẩm được đặt mua
-    private int quantity; // Số lượng đặt mua
-    private final BigDecimal unitPrice; // Đơn giá tại thời điểm đặt hàng
+    /** Sản phẩm được đặt mua */
+    private final Product product;
+
+    /** Số lượng đặt mua */
+    private int quantity;
+
+    /** Đơn giá tại thời điểm đặt hàng */
+    private final BigDecimal unitPrice;
 
     public OrderItem(Product product, int quantity) {
         if (product == null) {
@@ -24,12 +29,16 @@ public class OrderItem {
         this.unitPrice = product.getPrice();
     }
 
-    // Tính thành tiền của mặt hàng (đơn giá * số lượng)
+    /**
+     * Tính thành tiền của mặt hàng (đơn giá * số lượng).
+     */
     public BigDecimal calculateSubtotal() {
         return BigDecimal.valueOf(this.quantity).multiply(unitPrice);
     }
 
-    // Cập nhật số lượng của mặt hàng
+    /**
+     * Cập nhật số lượng của mặt hàng.
+     */
     void updateQuantity(int newQuantity) {
         if (newQuantity <= 0) {
             throw new IllegalArgumentException("Số lượng mặt hàng " + newQuantity + " không hợp lệ, phải lớn hơn 0");
@@ -46,6 +55,6 @@ public class OrderItem {
     }
 
     public BigDecimal getUnitPrice() {
-        return unitPrice;
+        return this.unitPrice;
     }
 }

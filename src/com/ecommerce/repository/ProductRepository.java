@@ -115,7 +115,8 @@ public class ProductRepository {
     }
 
     /**
-     * Trả về danh sách sản phẩm được sắp xếp theo tên từ A đến Z (không phân biệt hoa thường).
+     * Trả về danh sách sản phẩm được sắp xếp theo tên từ A đến Z (không phân biệt
+     * hoa thường).
      */
     public List<Product> findAllSortedByName() {
         List<Product> list = this.findAll();
@@ -124,7 +125,8 @@ public class ProductRepository {
     }
 
     /**
-     * Tìm và trả về danh sách các sản phẩm có đơn giá nằm trong khoảng từ minPrice đến maxPrice.
+     * Tìm và trả về danh sách các sản phẩm có đơn giá nằm trong khoảng từ minPrice
+     * đến maxPrice.
      */
     public List<Product> findByPriceRange(BigDecimal minPrice, BigDecimal maxPrice) {
         if (minPrice == null || maxPrice == null) {
@@ -202,7 +204,8 @@ public class ProductRepository {
     }
 
     /**
-     * Phân loại toàn bộ sản phẩm trong kho thành 2 nhóm dựa trên trạng thái tồn kho (IN_STOCK / OUT_OF_STOCK).
+     * Phân loại toàn bộ sản phẩm trong kho thành 2 nhóm dựa trên trạng thái tồn kho
+     * (IN_STOCK / OUT_OF_STOCK).
      */
     public Map<String, List<Product>> groupProductsByStockStatus() {
         return this.findAll().stream()
@@ -210,7 +213,8 @@ public class ProductRepository {
     }
 
     /**
-     * Nối toàn bộ tên của các sản phẩm hiện có trong kho thành một chuỗi văn bản duy nhất.
+     * Nối toàn bộ tên của các sản phẩm hiện có trong kho thành một chuỗi văn bản
+     * duy nhất.
      */
     public String getAllProductNamesJoined(String delimiter) {
         if (delimiter == null) {

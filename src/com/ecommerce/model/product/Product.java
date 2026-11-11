@@ -48,7 +48,8 @@ public class Product {
     }
 
     /**
-     * Trừ hàng trực tiếp từ phần tồn khả dụng, không được lẹm vào hàng đơn khác đang giữ.
+     * Trừ hàng trực tiếp từ phần tồn khả dụng, không được lẹm vào hàng đơn khác
+     * đang giữ.
      */
     public void deductStock(int quantity, Instant now) {
         if (quantity <= 0) {
@@ -106,7 +107,8 @@ public class Product {
     }
 
     /**
-     * Tính toán số lượng tồn kho khả dụng tại thời điểm now (tồn vật lý trừ đi các phiếu giữ chỗ còn hạn).
+     * Tính toán số lượng tồn kho khả dụng tại thời điểm now (tồn vật lý trừ đi các
+     * phiếu giữ chỗ còn hạn).
      */
     public int getAvailableStock(Instant now) {
         if (now == null) {
@@ -184,7 +186,8 @@ public class Product {
     }
 
     /**
-     * Cập nhật số lượng tồn kho mới, không được nhỏ hơn số lượng đang giữ chỗ còn hiệu lực.
+     * Cập nhật số lượng tồn kho mới, không được nhỏ hơn số lượng đang giữ chỗ còn
+     * hiệu lực.
      */
     public void updateStock(int newStock, Instant now) {
         if (newStock < 0) {
